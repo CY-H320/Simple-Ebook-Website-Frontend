@@ -4,21 +4,37 @@
         <form @submit.prevent="register">
             <label for="username">Username:</label>
             <input type="text" v-model="username" required>
+
             <label for="password">Password:</label>
             <input type="password" v-model="password" required>
+
+            <label for="gender">Gender:</label>
+            <select v-model="gender" required>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <label for="birthday">Birthday:</label>
+            <input type="date" v-model="birthday" required>
+
+            <label for="self_description">Self Description:</label>
+            <textarea v-model="self_description" required></textarea>
+
             <button type="submit">Register</button>
         </form>
     </div>
 </template>
 
 <script>
-import { fetchUserData } from '@/store/index.js';
-
 export default {
     data() {
         return {
             username: '',
-            password: ''
+            password: '',
+            gender: '',
+            birthday: '',
+            self_description: ''
         };
     },
     methods: {
@@ -26,15 +42,18 @@ export default {
             try {
                 const requestBody = {
                     username: this.username,
-                    password: this.password
+                    password: this.password,
+                    gender: this.gender,
+                    birthday: this.birthday,
+                    self_description: this.self_description
                 };
 
-                const response = await fetch('http://0.0.0.0:8080/api/user', {
+                const response = await fetch('http://0.0.0.0:8080/api/user/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: requestBody
+                    body: JSON.stringify(requestBody)
                 });
 
                 if (!response.ok) {
@@ -80,7 +99,10 @@ export default {
 }
 
 .registerBox input[type="text"],
-.registerBox input[type="password"] {
+.registerBox input[type="password"],
+.registerBox input[type="date"],
+.registerBox select,
+.registerBox textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
