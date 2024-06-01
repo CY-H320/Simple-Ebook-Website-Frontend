@@ -4,7 +4,10 @@
     :class="{ 'has-mouse': hasMouse }"
     @touchstart="hasMouse = false"
   >
-    <Flipbook
+  <div v-if="!login" class="login-form">
+      <h2>Login Required</h2>
+    </div>
+    <Flipbook v-if="login"
       class="flipbook"
       :pages="pages"
       :pagesHiRes="pagesHiRes"
@@ -52,6 +55,7 @@ export default {
       pagesHiRes: [], // Assuming you might have higher resolution pages
       hasMouse: true,
       pageNum: null,
+      login: false
     }
   },
   watch: {
@@ -63,6 +67,9 @@ export default {
     async fetchImages() {
       try {
         const token = localStorage.getItem('token');
+        if (token) {
+          this.login = true; // Assuming this.login is a reactive variable
+        }
         const userId = localStorage.getItem('userId');
         const response = await fetch(`http://0.0.0.0:8080/api/book/${this.id}/pages`, {
           headers: {
