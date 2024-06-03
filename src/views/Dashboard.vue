@@ -194,7 +194,7 @@ export default {
     },
     toggleUpdate() {
       this.formVisible = !this.formVisible;
-      this.historyVisible
+      this.historyVisible = false;
     },
   },
 };

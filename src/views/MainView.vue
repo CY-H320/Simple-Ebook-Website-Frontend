@@ -5,7 +5,7 @@
         <div class="books-container">
           <div v-for="(book, index) in books" :key="book.id" class="book" @click="openBookDisplay(index)">
             <img :src="book.cov" alt="Book Cover" class="book-cover">
-            <span class="book-title">{{ book.cover }}</span>
+            <span class="book-title">{{ book.title }}</span>
           </div>
         </div>
       </div>
@@ -53,15 +53,20 @@ const fetchBooks = async () => {
     const response = await fetch('http://0.0.0.0:8080/api/book/', { method: 'GET' });
     const booksData = await response.json();
 
-    // Assign the fetched books data to the books ref
-    books.value = booksData.map(book => ({
-      ...book,
-      cov: `http://localhost:8080/image/${book.cover}`
-    }));
+    // Log each book's cover URL to the console
+    books.value = booksData.map(book => {
+      const cov = `http://localhost:8080/image/${book.cover}`;
+      console.log(`Cover URL for ${book.title}: ${cov}`);
+      return {
+        ...book,
+        cov
+      };
+    });
   } catch (error) {
     console.error('Error fetching books:', error);
   }
-}
+};
+
 
 fetchBooks();
 </script>
