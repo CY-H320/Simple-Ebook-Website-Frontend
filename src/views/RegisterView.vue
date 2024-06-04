@@ -48,7 +48,7 @@ export default {
                     self_description: this.self_description
                 };
 
-                const response = await fetch('http://0.0.0.0:8080/api/user/', {
+                const response = await fetch('http://localhost:8080/api/user/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

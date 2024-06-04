@@ -4,7 +4,7 @@
     :class="{ 'has-mouse': hasMouse }"
     @touchstart="hasMouse = false"
   >
-  <div v-if="!login" class="login-form">
+    <div v-if="!login" class="login-form">
       <h2>Login Required</h2>
     </div>
     <Flipbook v-if="login"
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       pages: [],
-      pagesHiRes: [], // Assuming you might have higher resolution pages
+      pagesHiRes: [],
       hasMouse: true,
       pageNum: null,
       login: false
@@ -60,32 +60,43 @@ export default {
   },
   watch: {
     id() {
-      this.fetchImages();
+      this.fetchBookData();
     },
   },
   methods: {
-    async fetchImages() {
+    async fetchBookData() {
       try {
         const token = localStorage.getItem('token');
-        if (token) {
-          this.login = true; // Assuming this.login is a reactive variable
+        if (!token) {
+          throw new Error('Token not found');
         }
-        const userId = localStorage.getItem('userId');
-        const response = await fetch(`http://0.0.0.0:8080/api/book/${this.id}/pages`, {
-          headers: {
-          'Access-Token': token
-          }
+        this.login = true;
+
+        const coverResponse = await fetch(`http://localhost:8080/api/book/${this.id}`);
+        if (!coverResponse.ok) {
+          throw new Error('Failed to fetch cover');
+        }
+        const coverData = await coverResponse.json();
+        const coverUrl = `http://localhost:8080/image/${coverData.cover}`;
+
+        const pagesResponse = await fetch(`http://0.0.0.0:8080/api/book/${this.id}/pages`, {
+          headers: { 'Access-Token': token }
         });
-        const data = await response.json();
-        this.pages = data.map(page => `http://localhost:8080/image/${page.uuid}`);
+        if (!pagesResponse.ok) {
+          throw new Error('Failed to fetch pages');
+        }
+        const pagesData = await pagesResponse.json();
+        const pagesUrls = pagesData.map(page => `http://localhost:8080/image/${page.uuid}`);
+
+        this.pages = [null, coverUrl, ...pagesUrls];
         this.resetBook();
       } catch (error) {
-        console.error('Error fetching images:', error);
+        console.error('Error fetching book data:', error);
+        // Optionally, you could provide user feedback here
       }
     },
     resetBook() {
       this.pageNum = null;
-      this.$refs.flipbook.reset();
     },
     onFlipLeftStart(page) { console.log('flip-left-start', page) },
     onFlipLeftEnd(page) {
@@ -97,13 +108,13 @@ export default {
     },
   },
   mounted() {
-    this.fetchImages();
+    this.fetchBookData();
     window.addEventListener('keydown', (ev) => {
-      const flipbook = this.$refs.flipbook
-      if (!flipbook) return
-      if (ev.keyCode == 37 && flipbook.canFlipLeft) flipbook.flipLeft()
-      if (ev.keyCode == 39 && flipbook.canFlipRight) flipbook.flipRight()
-    })
+      const flipbook = this.$refs.flipbook;
+      if (!flipbook) return;
+      if (ev.keyCode == 37 && flipbook.canFlipLeft) flipbook.flipLeft();
+      if (ev.keyCode == 39 && flipbook.canFlipRight) flipbook.flipRight();
+    });
   },
 }
 </script>

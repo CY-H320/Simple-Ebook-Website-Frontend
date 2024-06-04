@@ -50,7 +50,17 @@ const books = ref([]);
 
 const fetchBooks = async () => {
   try {
-    const response = await fetch('http://0.0.0.0:8080/api/book/', { method: 'GET' });
+    const response = await fetch('http://localhost:8080/api/book/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
     const booksData = await response.json();
 
     // Log each book's cover URL to the console
@@ -66,6 +76,7 @@ const fetchBooks = async () => {
     console.error('Error fetching books:', error);
   }
 };
+
 
 
 fetchBooks();
