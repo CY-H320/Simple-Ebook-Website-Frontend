@@ -79,7 +79,7 @@ export default {
         const coverData = await coverResponse.json();
         const coverUrl = `http://localhost:8080/image/${coverData.cover}`;
 
-        const pagesResponse = await fetch(`http://0.0.0.0:8080/api/book/${this.id}/pages`, {
+        const pagesResponse = await fetch(`http://localhost:8080/api/book/${this.id}/pages`, {
           headers: { 'Access-Token': token }
         });
         if (!pagesResponse.ok) {

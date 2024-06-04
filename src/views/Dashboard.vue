@@ -20,19 +20,19 @@
           <!-- Update form -->
           <form v-show="formVisible" @submit.prevent="updateUser">
             <label for="username">Username:</label>
-            <input type="text" id="username" v-model="user.username" required />
+            <input type="text" id="username" v-model="user.username" required/>
 
             <label for="gender">Gender:</label>
-            <input type="text" id="gender" v-model="user.gender" required />
+            <input type="text" id="gender" v-model="user.gender" required/>
 
             <label for="birthday">Birthday:</label>
-            <input type="date" id="birthday" v-model="user.birthday" required />
+            <input type="date" id="birthday" v-model="user.birthday" required/>
 
             <label for="self_description">Self Description:</label>
             <textarea
-              id="self_description"
-              v-model="user.self_description"
-              rows="4"
+                id="self_description"
+                v-model="user.self_description"
+                rows="4"
             ></textarea>
 
             <button type="submit">Update</button>
@@ -56,7 +56,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import {ref} from 'vue';
 import apiClient from "../services/apiClient.js"; // Adjust the import path as needed
 
 export default {
@@ -78,7 +78,7 @@ export default {
   methods: {
     async fetchBooks() {
       try {
-        const response = await fetch("http://0.0.0.0:8080/api/book/", {
+        const response = await fetch("http://localhost:8080/api/book/", {
           method: "GET",
         });
         const booksData = await response.json();
@@ -98,13 +98,13 @@ export default {
         const userId = localStorage.getItem("userId");
 
         const response = await fetch(
-          `http://localhost:8080/api/user/${userId}`,
-          {
-            method: "GET",
-            headers: {
-              "Access-Token": token,
-            },
-          }
+            `http://localhost:8080/api/user/${userId}`,
+            {
+              method: "GET",
+              headers: {
+                "Access-Token": token,
+              },
+            }
         );
 
         if (!response.ok) {
@@ -124,13 +124,13 @@ export default {
         const userId = localStorage.getItem("userId");
 
         const response = await fetch(
-          `http://localhost:8080/api/user/${userId}/history`,
-          {
-            method: "GET",
-            headers: {
-              "Access-Token": token,
-            },
-          }
+            `http://localhost:8080/api/user/${userId}/history`,
+            {
+              method: "GET",
+              headers: {
+                "Access-Token": token,
+              },
+            }
         );
 
         if (!response.ok) {
@@ -158,15 +158,15 @@ export default {
         };
 
         const response = await fetch(
-          `http://localhost:8080/api/user/${userId}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "Access-Token": token,
-            },
-            body: JSON.stringify(requestBody),
-          }
+            `http://localhost:8080/api/user/${userId}`,
+            {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                "Access-Token": token,
+              },
+              body: JSON.stringify(requestBody),
+            }
         );
 
         if (!response.ok) {
@@ -181,10 +181,13 @@ export default {
       }
     },
     formatDate(date) {
-      const options = { year: "numeric", month: "long", day: "numeric" };
+      const options = {year: "numeric", month: "long", day: "numeric"};
       return new Date(date).toLocaleDateString(undefined, options);
     },
     getBookTitle(bookId) {
+      if (!this.books.value || this.books.value.length === 0) {
+        return 'Loading...';
+      }
       const book = this.books.value.find(item => item.id === parseInt(bookId));
       return book ? book.title : 'Unknown';
     },

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: 'http://0.0.0.0:8000',  // Ensure this base URL matches your FastAPI server URL
+  baseURL: 'http://localhost:8080/api',  // Ensure this base URL matches your FastAPI server URL
 });
 
 apiClient.interceptors.request.use(
